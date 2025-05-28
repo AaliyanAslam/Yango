@@ -4,6 +4,7 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 export default function Home() {
+  
   return (
     <View>
       <View style={styles.navContainer}>
