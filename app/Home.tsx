@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     borderWidth: 1,
     borderColor: "#F2F2F2",
-    marginBottom: 270,
+    marginBottom: 260,
 
     borderBottomWidth: 0,
     overflow: "hidden",
