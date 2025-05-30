@@ -1,11 +1,13 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Drawer } from "react-native-paper";
@@ -34,15 +36,19 @@ const optionsName = [
 ];
 
 const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
-  const [active, setActive] = React.useState("");
+  const [active, setActive] = useState("");
 
   // const dummyUsers = Array.from({ length: 10 }, (_, i) => `User ${i + 1}`);
 
+  const [username, setUsername] = React.useState("");
+  useEffect(() => {
+    setUsername("Aaliyan");
+  }, []);
   return (
     <>
       {visible ? (
         <View style={styles.overlay}>
-          <Drawer.Section title="Menu" style={styles.drawerContainer}>
+          <Drawer.Section title="" style={styles.drawerContainer}>
             {/* Close Button */}
             <View style={styles.closeButtonContainer}>
               <Pressable
@@ -55,14 +61,28 @@ const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
 
             {/* Profile Section */}
             <View style={styles.profileContainer}>
-              <Image
-                source={{
-                  uri: "https://i.pravatar.cc/100",
-                }}
-                style={styles.profileImage}
-              />
-              <Text style={styles.profileName}>Aaliyan</Text>
-              <Text style={styles.profileEmail}>aaliyan@example.com</Text>
+              <TouchableOpacity style={styles.profileImage}>
+                <AntDesign name="camerao" size={26} color="#000" />
+              </TouchableOpacity>
+              <View>
+                <Text style={styles.profileName}>{username}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                    marginTop: 2,
+                  }}
+                >
+                  <AntDesign
+                    name="star"
+                    style={styles.star}
+                    size={12}
+                    color="#000"
+                  />
+                  <Text style={{ fontSize: 12 }}>5:00</Text>
+                </View>
+              </View>
             </View>
 
             {/* Dummy User List */}
@@ -121,23 +141,31 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   profileContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-    marginTop: 20,
+    paddingHorizontal: 19,
+
+    flexDirection: "row",
+    gap: 1,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 50,
+    height: 50,
+    borderRadius: 30,
     marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#DDDDDD",
+    marginRight: 10,
+    shadowColor: "#000",
+    opacity: 0.9,
   },
   profileName: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
-  profileEmail: {
-    fontSize: 14,
+  star: {
+    fontSize: 11,
     color: "#555",
+    opacity: 0.8,
   },
   userList: {
     flex: 1,
