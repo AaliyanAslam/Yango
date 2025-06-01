@@ -38,8 +38,6 @@ const optionsName = [
 const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
   const [active, setActive] = useState("");
 
-  // const dummyUsers = Array.from({ length: 10 }, (_, i) => `User ${i + 1}`);
-
   const [username, setUsername] = React.useState("");
   useEffect(() => {
     setUsername("Aaliyan");
