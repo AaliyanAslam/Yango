@@ -1,12 +1,11 @@
-import { View , StatusBar } from 'react-native'
-import React from 'react'
-import { Slot } from 'expo-router'
+import { Stack } from "expo-router";
+import React from "react";
 
 export default function _layout() {
   return (
-    <View>
-      <Slot/>
-      <StatusBar backgroundColor={'#000'} barStyle='light-content' />
-    </View>
-  )
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="rideScreen" options={{ headerShown: false }} />
+    </Stack>
+  );
 }

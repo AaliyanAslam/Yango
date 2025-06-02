@@ -1,3 +1,8 @@
+import { Ionicons } from "@expo/vector-icons";
+import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { useState } from "react";
 import {
   Image,
@@ -8,13 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { Ionicons } from "@expo/vector-icons";
-import Entypo from "@expo/vector-icons/Entypo";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 // Images
 import BikeDelivery from "@/assets/images/bikedimg.png";
 import CarDelivery from "@/assets/images/cardimg.png";
@@ -28,10 +26,13 @@ import Banner2 from "../assets/images/banner2.jpg";
 
 // Components
 import Drawer from "@/components/Drawer";
-
+import { router } from "expo-router";
 export default function Home() {
   const [showDrawer, setShowDrawer] = useState(false);
 
+  const goToRideScreen = () => {
+    router.push("/ridescreen");
+  };
   return (
     <>
       <View style={[styles.container, { backgroundColor: "#fff" }]}>
@@ -88,11 +89,16 @@ export default function Home() {
             </View>
 
             {/* Where to go */}
-            <View style={styles.whereToContainer}>
+            <TouchableOpacity
+              style={styles.whereToContainer}
+              onPress={() => {
+                goToRideScreen();
+              }}
+            >
               <Image source={WhereCar} style={styles.carImg} />
               <Text style={styles.whereToText}>Where to?</Text>
               <MaterialIcons name="navigate-next" size={24} color="#000" />
-            </View>
+            </TouchableOpacity>
 
             {/* Recent Rides */}
             <View style={styles.recentRide}>

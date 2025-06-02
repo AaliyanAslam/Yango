@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "app/Home.tsx", "components/Drawer.tsx"  ]
+, "app/home.tsx", "components/Drawer.tsx"  ]
 }
