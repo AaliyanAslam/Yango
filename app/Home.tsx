@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 10,
+    marginBottom: 8,
   },
   addressButton: {
     backgroundColor: "#F7F7F7",
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
   bannerWrapper: {
     marginVertical: 20,
     marginHorizontal: 30,
-    marginBottom: 190,
+    // marginBottom: 0,
     gap: 10,
   },
   banner1: {
