@@ -12,7 +12,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+ 
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 // Images
 import BikeDelivery from "@/assets/images/bikedimg.png";
 import CarDelivery from "@/assets/images/cardimg.png";
@@ -35,6 +37,7 @@ export default function Home() {
   };
   return (
     <>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={[styles.container, { backgroundColor: "#fff" }]}>
         {/* NAVBAR */}
         <View style={styles.navContainer}>
@@ -138,6 +141,8 @@ export default function Home() {
           </View>
         </ScrollView>
       </View>
+     </SafeAreaView>
+
     </>
   );
 }
