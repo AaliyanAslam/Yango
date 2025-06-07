@@ -1,99 +1,132 @@
 import { router } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { auth } from '../lib/firebase'; // Import your Firebase auth instance
+import { Alert, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
+import { auth } from '../lib/firebase';
+import { AntDesign, Feather } from '@expo/vector-icons';
+import Loader from '@/components/loader';
 
 const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
     if (!name || !email || !password) {
-      Alert.alert('Error', 'Please fill all fields');
+      Alert.alert('Missing Info', 'Please fill in all fields');
       return;
     }
 
     try {
+      setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      router.replace('/Index');
       console.log('User signed up:', userCredential.user);
       Alert.alert('Success', `Welcome ${name}! You are signed up.`);
-    } catch (error) {
+      router.replace('/Index');
+    } catch (error: any) {
+      Alert.alert('Signup Failed', error.message || 'Something went wrong');
       console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Sign Up</Text>
+      <Text style={styles.heading}>CREATE ACCOUNT</Text>
+      <Text style={styles.subText}>Sign up to get started</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        value={name}
-        onChangeText={setName}
-      />
+      {/* Full Name */}
+      <View style={styles.inputBox}>
+        <Feather name="user" size={20} color="#333" style={{ marginRight: 8 }} />
+        <TextInput
+          placeholder="Full Name"
+          value={name}
+          onChangeText={setName}
+          style={{ flex: 1 }}
+        />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        onChangeText={setEmail}
-      />
+      {/* Email */}
+      <View style={styles.inputBox}>
+        <AntDesign name="mail" size={20} color="#333" style={{ marginRight: 8 }} />
+        <TextInput
+          placeholder="Email"
+          value={email}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          onChangeText={setEmail}
+          style={{ flex: 1 }}
+        />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        secureTextEntry
-        onChangeText={setPassword}
-      />
+      {/* Password */}
+      <View style={styles.inputBox}>
+        <AntDesign name="lock" size={20} color="#333" style={{ marginRight: 8 }} />
+        <TextInput
+          placeholder="Password"
+          value={password}
+          secureTextEntry
+          onChangeText={setPassword}
+          style={{ flex: 1 }}
+        />
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
+      {/* Signup Button */}
+      <Pressable style={styles.button} onPress={handleSignup}>
+        {loading ? <Loader /> : <Text style={styles.buttonText}>Sign Up</Text>}
+      </Pressable>
+
+      <Text style={styles.terms}>
+        By signing up, you agree to our Terms of Service and Privacy Policy.
+      </Text>
     </View>
   );
 };
 
 export default SignupScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  heading: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
-    color: '#333',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
+    padding: 20,
+    paddingTop: 100,
     backgroundColor: '#fff',
   },
+  heading: {
+    fontSize: 22,
+    fontWeight: '900',
+    marginBottom: 8,
+    color: '#111',
+  },
+  subText: {
+    color: '#666',
+    marginBottom: 20,
+  },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 15,
+  },
   button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#FF3B30',
+    padding: 16,
+    borderRadius: 14,
+    alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
     color: '#fff',
-    textAlign: 'center',
     fontWeight: '600',
     fontSize: 16,
+  },
+  terms: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

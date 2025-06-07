@@ -1,7 +1,10 @@
+import { auth } from "@/lib/firebase";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
+import { signOut } from "firebase/auth";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import Loader from "@/components/loader";
 import {
   Pressable,
   ScrollView,
@@ -39,9 +42,23 @@ const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
   const [active, setActive] = useState("");
 
   const [username, setUsername] = React.useState("");
+const [loading , setLoading ] = useState(false);
+
   useEffect(() => {
     setUsername("Aaliyan");
   }, []);
+  const handleLogout = async ()=>{
+  try{
+   setLoading(true);
+   await  signOut(auth);
+    console.log("User signed out successfully");
+  }catch(error){
+    console.error("Error signing out:", error);
+  }finally{
+    setLoading(false);
+  }
+}
+
   return (
     <>
       {visible ? (
@@ -93,6 +110,33 @@ const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
                   onPress={() => setActive(optionsName[index].name)}
                 />
               ))}
+ <Pressable
+  onPress={handleLogout}
+  style={{
+    position: "fixed",
+    bottom: 0,
+ 
+    backgroundColor: '#FF3B30', // red color
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // for Android shadow
+  }}
+>
+ {
+  loading ? (
+    <Loader />
+  ) : (
+    <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
+      Logout
+    </Text>
+  )}
+</Pressable>
+
             </ScrollView>
           </Drawer.Section>
         </View>
@@ -114,6 +158,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   drawerContainer: {
+    
     position: "absolute",
     top: 0,
     right: 0,

@@ -40,20 +40,13 @@ const checkUserAuth = ()=> {
       console.log("User is signed in:", user);
     } else {
       console.log("No user is signed in");
-      router.push("/signup");
+      router.push("/login");
     }
   } )
 }
 checkUserAuth();
 
-const handleLogout = async ()=>{
-  try{
-   await  signOut(auth)
-    console.log("User signed out successfully");
-  }catch(error){
-    console.error("Error signing out:", error);
-  }
-}
+
 
   const goToRideScreen = () => {
     router.push("/ridescreen");
@@ -61,10 +54,7 @@ const handleLogout = async ()=>{
   return (
     <>
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ padding: 10, backgroundColor: "#fff", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Link href="/signup">Sign Up</Link>
-      <Link href="/signup" onPress={handleLogout}>LOGOUT</Link>
-      </View>
+      
       <View style={[styles.container, { backgroundColor: "#fff" }]}>
         {/* NAVBAR */}
         <View style={styles.navContainer}>
