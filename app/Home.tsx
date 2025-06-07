@@ -25,12 +25,35 @@ import b2 from "../assets/images/2b2.jpg";
 import b3 from "../assets/images/2b3.jpg";
 import Banner1 from "../assets/images/banner1.jpg";
 import Banner2 from "../assets/images/banner2.jpg";
+import { onAuthStateChanged , signOut} from "firebase/auth";
+import {auth } from "@/lib/firebase";
 
 // Components
 import Drawer from "@/components/Drawer";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 export default function Home() {
   const [showDrawer, setShowDrawer] = useState(false);
+
+const checkUserAuth = ()=> {
+  onAuthStateChanged(auth , (user) =>{
+    if (user) {
+      console.log("User is signed in:", user);
+    } else {
+      console.log("No user is signed in");
+      router.push("/signup");
+    }
+  } )
+}
+checkUserAuth();
+
+const handleLogout = async ()=>{
+  try{
+   await  signOut(auth)
+    console.log("User signed out successfully");
+  }catch(error){
+    console.error("Error signing out:", error);
+  }
+}
 
   const goToRideScreen = () => {
     router.push("/ridescreen");
@@ -38,6 +61,10 @@ export default function Home() {
   return (
     <>
     <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ padding: 10, backgroundColor: "#fff", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Link href="/signup">Sign Up</Link>
+      <Link href="/signup" onPress={handleLogout}>LOGOUT</Link>
+      </View>
       <View style={[styles.container, { backgroundColor: "#fff" }]}>
         {/* NAVBAR */}
         <View style={styles.navContainer}>
