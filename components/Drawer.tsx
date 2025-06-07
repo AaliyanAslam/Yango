@@ -1,10 +1,10 @@
+import Loader from "@/components/loader";
 import { auth } from "@/lib/firebase";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import { signOut } from "firebase/auth";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import Loader from "@/components/loader";
 import {
   Pressable,
   ScrollView,
