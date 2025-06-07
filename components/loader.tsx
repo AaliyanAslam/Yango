@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { ActivityIndicator } from 'react-native';
-
-export default function loader() {
+//@ts-ignore
+export default function loader({col}) {
   return (
     <View>
-      <ActivityIndicator size="small" color="#ffff" />
+      <ActivityIndicator size="small" color={col} />
     </View>
   )
 }

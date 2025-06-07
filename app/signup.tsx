@@ -5,12 +5,14 @@ import { Alert, StyleSheet, Text, TextInput, View, Pressable } from 'react-nativ
 import { auth } from '../lib/firebase';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import Loader from '@/components/loader';
+import { updateProfile } from 'firebase/auth';
 
 const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [registerLoading , setRegisterLoading] = useState(false);
 
   const handleSignup = async () => {
     if (!name || !email || !password) {
@@ -21,8 +23,11 @@ const SignupScreen = () => {
     try {
       setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('User signed up:', userCredential.user);
-      Alert.alert('Success', `Welcome ${name}! You are signed up.`);
+      // console.log('User signed up:', userCredential.user);
+      // Alert.alert('Success', `Welcome ${name}! You are signed up.`);
+        await updateProfile(userCredential.user, {
+    displayName: name, // name variable tum input field se le rahe hoge
+  });
       router.replace('/Index');
     } catch (error: any) {
       Alert.alert('Signup Failed', error.message || 'Something went wrong');
@@ -31,6 +36,10 @@ const SignupScreen = () => {
       setLoading(false);
     }
   };
+  const goToLogin = ()=> {
+    setRegisterLoading(true);
+    router.replace('/login');
+  }
 
   return (
     <View style={styles.container}>
@@ -75,9 +84,21 @@ const SignupScreen = () => {
 
       {/* Signup Button */}
       <Pressable style={styles.button} onPress={handleSignup}>
-        {loading ? <Loader /> : <Text style={styles.buttonText}>Sign Up</Text>}
+        {loading ? <Loader col={"#fff"} /> : <Text style={styles.buttonText}>Sign Up</Text>}
       </Pressable>
+{/* login here */}
+      <View style={styles.bottomTextContainer} onTouchEnd={() => router.replace('/login')}>
+  <Text style={styles.accountText}>Already have an account? </Text>
+  <Pressable onPress={goToLogin}>
+    <View style={{ flexDirection: 'row', alignItems: 'center'  , gap: 4 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' ,  justifyContent: 'center' }}>
+        {registerLoading ? <Loader col = {"red"} /> : <AntDesign name="login" size={16} color="#FF3B30" style={{ marginRight: 4 }} />} 
+      <Text style={styles.loginLink}>Login here</Text>
+      </View>
+    </View>
 
+  </Pressable>
+</View>
       <Text style={styles.terms}>
         By signing up, you agree to our Terms of Service and Privacy Policy.
       </Text>
@@ -129,4 +150,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  bottomTextContainer: {
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginTop: 20,
+},
+accountText: {
+  fontSize: 13,
+  color: '#666',
+},
+loginLink: {
+  fontSize: 13,
+  color: '#FF3B30',
+  fontWeight: '600',
+},
+
 });

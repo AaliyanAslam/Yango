@@ -1,41 +1,51 @@
-import { View, Text, TextInput, StyleSheet, Pressable, Alert, Image } from 'react-native';
-import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../lib/firebase';
-import { router } from 'expo-router';
 import Loader from '@/components/loader';
 import { AntDesign } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { auth } from '../lib/firebase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [error, setError] = useState('');
+    const [registerLoading , setRegisterLoading] = useState(false);
+  
 
   const handleLogin = async () => {
+    setError('');
+    setMessage(false);
+
     if (!email || !password) {
-      Alert.alert('Missing info', 'Please enter both email and password');
+      setError('Please enter both email and password');
       return;
     }
 
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert('Success', 'Logged in!');
+      setMessage(true);
       router.replace('/Index');
     } catch (err: any) {
-      Alert.alert('Login Failed', err.message || 'Something went wrong');
+      setError(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
-
+const goToLogin = ()=> {
+    setRegisterLoading(true);
+    router.replace('/signup');
+  }
   return (
     <View style={styles.container}>
       {/* Heading */}
       <Text style={styles.heading}>ENTER YOUR EMAIL</Text>
       <Text style={styles.subText}>We will log you in using this email and password</Text>
 
-      {/* Email Input Style similar to Yango */}
+      {/* Email Input */}
       <View style={styles.inputBox}>
         <AntDesign name="mail" size={20} color="black" style={{ marginRight: 8 }} />
         <TextInput
@@ -48,6 +58,7 @@ export default function LoginScreen() {
         />
       </View>
 
+      {/* Password Input */}
       <View style={styles.inputBox}>
         <AntDesign name="lock" size={20} color="black" style={{ marginRight: 8 }} />
         <TextInput
@@ -59,18 +70,39 @@ export default function LoginScreen() {
         />
       </View>
 
+      {/* Error Message */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      {/* Success Message */}
+      {message && <Text style={styles.successText}>Login Successful!</Text>}
+
       {/* Continue Button */}
       <Pressable onPress={handleLogin} style={styles.button}>
-        {loading ? <Loader /> : <Text style={styles.buttonText}>Continue</Text>}
+        {loading ? <Loader col={"#fff"} /> : <Text style={styles.buttonText}>Continue</Text>}
       </Pressable>
 
-      {/* Terms Text */}
+      {/* Register Text */}
+      <View style={styles.bottomTextContainer}>
+        <Text style={styles.accountText}>Don't have an account? </Text>
+        <Pressable onPress={goToLogin}>
+          <View style={{ flexDirection: 'row', alignItems: 'center'  , gap: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' ,  justifyContent: 'center' }}>
+              {registerLoading ? <Loader col={"red"} /> : <AntDesign name="login" size={16} color="#FF3B30" style={{ marginRight: 4 }} />} 
+            <Text style={styles.loginLink}>Register here</Text>
+            </View>
+          </View>
+      
+        </Pressable>
+      </View>
+
+      {/* Terms */}
       <Text style={styles.terms}>
         By continuing, I accept the terms of the User Agreement and Privacy Policy.
       </Text>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,5 +145,31 @@ const styles = StyleSheet.create({
     color: '#888',
     textAlign: 'center',
     marginTop: 20,
+  },
+  bottomTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  accountText: {
+    fontSize: 13,
+    color: '#666',
+  },
+  loginLink: {
+    fontSize: 13,
+    color: '#FF3B30',
+    fontWeight: '600',
+  },
+  errorText: {
+    color: '#FF3B30',
+    fontSize: 13,
+    marginBottom: 10,
+    marginLeft: 5,
+  },
+  successText: {
+    color: 'green',
+    fontSize: 13,
+    marginBottom: 10,
+    marginLeft: 5,
   },
 });

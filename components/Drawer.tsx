@@ -45,7 +45,9 @@ const MyDrawer: React.FC<DrawerProps> = ({ visible, setVisible }) => {
 const [loading , setLoading ] = useState(false);
 
   useEffect(() => {
-    setUsername("Aaliyan");
+    // setUsername("Aaliyan");
+   setUsername(auth.currentUser?.displayName || "Current User");
+
   }, []);
   const handleLogout = async ()=>{
   try{
@@ -129,7 +131,7 @@ const [loading , setLoading ] = useState(false);
 >
  {
   loading ? (
-    <Loader />
+    <Loader col={"#fff"} />
   ) : (
     <Text style={{ color: "#fff", fontSize: 16, fontWeight: "500" }}>
       Logout
