@@ -12,7 +12,6 @@ import {
   Text,
   TouchableOpacity,
   View,
- 
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // Images
@@ -20,31 +19,32 @@ import BikeDelivery from "@/assets/images/bikedimg.png";
 import CarDelivery from "@/assets/images/cardimg.png";
 import WhereCar from "@/assets/images/wherecar.png";
 import YangoLogo from "@/assets/images/yangoLogo.png";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import b1 from "../assets/images/2b1.jpg";
 import b2 from "../assets/images/2b2.jpg";
 import b3 from "../assets/images/2b3.jpg";
 import Banner1 from "../assets/images/banner1.jpg";
 import Banner2 from "../assets/images/banner2.jpg";
-import { onAuthStateChanged , signOut} from "firebase/auth";
-import {auth } from "@/lib/firebase";
 
 // Components
 import Drawer from "@/components/Drawer";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 export default function Home() {
   const [showDrawer, setShowDrawer] = useState(false);
 
-const checkUserAuth = ()=> {
-  onAuthStateChanged(auth , (user) =>{
-    if (user) {
-      console.log("User is signed in:", user);
-    } else {
-      console.log("No user is signed in");
-      router.push("/login");
-    }
-  } )
-}
-checkUserAuth();
+  const checkUserAuth = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is signed in:", user);
+      }
+      else if (!user) {
+        console.log("No user is signed in");
+        router.replace("/login");
+      }
+    })
+  }
+  checkUserAuth();
 
 
 
@@ -53,112 +53,112 @@ checkUserAuth();
   };
   return (
     <>
-    <SafeAreaView style={{ flex: 1 }}>
-      
-      <View style={[styles.container, { backgroundColor: "#fff" }]}>
-        {/* NAVBAR */}
-        <View style={styles.navContainer}>
-          <Image source={YangoLogo} style={styles.img} />
-          <TouchableOpacity
-            onPress={() => {
-              setShowDrawer(!showDrawer);
-              console.log("Drawer toggled", !showDrawer);
-            }}
-          >
-            <FontAwesome name="bars" size={24} color="#000" />
-          </TouchableOpacity>
-        </View>
-        {showDrawer && (
-          <Drawer visible={showDrawer} setVisible={setShowDrawer} />
-        )}
+      <SafeAreaView style={{ flex: 1 }}>
 
-        {/* Location */}
-        <View style={styles.navigatorContainer}>
-          <Text>Your location</Text>
-          <Ionicons name="navigate" size={15} color="black" />
-        </View>
-
-        {/* Location Service */}
-        <View style={styles.locationRow}>
-          <View style={styles.locationIcon}>
-            <FontAwesome6 name="map-location-dot" size={24} color="#000" />
-          </View>
-          <View>
-            <Text style={styles.text}>Enable location service</Text>
-            <Text style={styles.grayText}>We can't see where you are</Text>
-          </View>
-        </View>
-
-        {/* Address & Share */}
-        <View style={styles.addressShareContainer}>
-          <Pressable style={styles.addressButton}>
-            <Text style={styles.addressText}>Enter address</Text>
-          </Pressable>
-          <Pressable style={styles.shareButton}>
-            <Text style={styles.shareText}>Share</Text>
-          </Pressable>
-        </View>
-
-        {/* Main Scrollable Content */}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.dataContainer}>
-            {/* Delivery Options */}
-            <View style={styles.deliveryOptions}>
-              <Image source={BikeDelivery} style={styles.vehicle} />
-              <Image source={CarDelivery} style={styles.vehicle} />
-            </View>
-
-            {/* Where to go */}
+        <View style={[styles.container, { backgroundColor: "#fff" }]}>
+          {/* NAVBAR */}
+          <View style={styles.navContainer}>
+            <Image source={YangoLogo} style={styles.img} />
             <TouchableOpacity
-              style={styles.whereToContainer}
               onPress={() => {
-                goToRideScreen();
+                setShowDrawer(!showDrawer);
+                console.log("Drawer toggled", !showDrawer);
               }}
             >
-              <Image source={WhereCar} style={styles.carImg} />
-              <Text style={styles.whereToText}>Where to?</Text>
-              <MaterialIcons name="navigate-next" size={24} color="#000" />
+              <FontAwesome name="bars" size={24} color="#000" />
             </TouchableOpacity>
+          </View>
+          {showDrawer && (
+            <Drawer visible={showDrawer} setVisible={setShowDrawer} />
+          )}
 
-            {/* Recent Rides */}
-            <View style={styles.recentRide}>
-              <View style={styles.dataLogo}>
-                <Entypo name="location-pin" size={24} color="#000" />
-              </View>
-              <View>
-                <Text style={styles.text}>A Street, SB9</Text>
-                <Text style={styles.grayText}>
-                  KDA Scheme 1E, Sindh, Pakistan
-                </Text>
-              </View>
+          {/* Location */}
+          <View style={styles.navigatorContainer}>
+            <Text>Your location</Text>
+            <Ionicons name="navigate" size={15} color="black" />
+          </View>
+
+          {/* Location Service */}
+          <View style={styles.locationRow}>
+            <View style={styles.locationIcon}>
+              <FontAwesome6 name="map-location-dot" size={24} color="#000" />
             </View>
-
-            <View style={styles.recentRide}>
-              <View style={styles.dataLogo}>
-                <FontAwesome name="shopping-bag" size={24} color="#000" />
-              </View>
-              <View>
-                <Text style={styles.text}>Haidery Market</Text>
-                <Text style={styles.grayText}>North Nazimabad Block SCB</Text>
-              </View>
+            <View>
+              <Text style={styles.text}>Enable location service</Text>
+              <Text style={styles.grayText}>We can't see where you are</Text>
             </View>
+          </View>
 
-            {/* Banners */}
-            <View style={styles.bannerWrapper}>
-              <Image source={Banner1} style={styles.banner1} />
-              <Image source={Banner2} style={styles.banner1} />
-              <View style={styles.b21Wrapper}>
-                <Image source={b3} style={styles.b1} />
-                <View style={{ gap: 10 }}>
-                  <Image source={b1} style={styles.b2} />
-                  <Image source={b2} style={styles.b3} />
+          {/* Address & Share */}
+          <View style={styles.addressShareContainer}>
+            <Pressable style={styles.addressButton}>
+              <Text style={styles.addressText}>Enter address</Text>
+            </Pressable>
+            <Pressable style={styles.shareButton}>
+              <Text style={styles.shareText}>Share</Text>
+            </Pressable>
+          </View>
+
+          {/* Main Scrollable Content */}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.dataContainer}>
+              {/* Delivery Options */}
+              <View style={styles.deliveryOptions}>
+                <Image source={BikeDelivery} style={styles.vehicle} />
+                <Image source={CarDelivery} style={styles.vehicle} />
+              </View>
+
+              {/* Where to go */}
+              <TouchableOpacity
+                style={styles.whereToContainer}
+                onPress={() => {
+                  goToRideScreen();
+                }}
+              >
+                <Image source={WhereCar} style={styles.carImg} />
+                <Text style={styles.whereToText}>Where to?</Text>
+                <MaterialIcons name="navigate-next" size={24} color="#000" />
+              </TouchableOpacity>
+
+              {/* Recent Rides */}
+              <View style={styles.recentRide}>
+                <View style={styles.dataLogo}>
+                  <Entypo name="location-pin" size={24} color="#000" />
+                </View>
+                <View>
+                  <Text style={styles.text}>A Street, SB9</Text>
+                  <Text style={styles.grayText}>
+                    KDA Scheme 1E, Sindh, Pakistan
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.recentRide}>
+                <View style={styles.dataLogo}>
+                  <FontAwesome name="shopping-bag" size={24} color="#000" />
+                </View>
+                <View>
+                  <Text style={styles.text}>Haidery Market</Text>
+                  <Text style={styles.grayText}>North Nazimabad Block SCB</Text>
+                </View>
+              </View>
+
+              {/* Banners */}
+              <View style={styles.bannerWrapper}>
+                <Image source={Banner1} style={styles.banner1} />
+                <Image source={Banner2} style={styles.banner1} />
+                <View style={styles.b21Wrapper}>
+                  <Image source={b3} style={styles.b1} />
+                  <View style={{ gap: 10 }}>
+                    <Image source={b1} style={styles.b2} />
+                    <Image source={b2} style={styles.b3} />
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
-      </View>
-     </SafeAreaView>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
 
     </>
   );
