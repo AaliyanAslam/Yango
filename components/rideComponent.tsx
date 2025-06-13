@@ -33,7 +33,9 @@ export default function RideComponent() {
   const fetchPredictions = async () => {
     try {
       const response = await fetch(
-        `https://maps.gomaps.pro/maps/api/place/textsearch/json?query=${destinationQuery}&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`
+   
+      `https://maps.gomaps.pro/maps/api/place/textsearch/json?query=${destinationQuery}&location=30.3753,69.3451&radius=1000000&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`
+
       );
       const data = await response.json();
       setPredictions(data.results || []);

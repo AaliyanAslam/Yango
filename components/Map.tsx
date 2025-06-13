@@ -8,10 +8,13 @@ import {
   StyleSheet,
   Text,
   View,
+  Image
 } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store"; 
+import { FontAwesome5 } from '@expo/vector-icons'; // ✅ CORRECT
+
 
 export default function Map() {
   const { location } = useLocation();
@@ -19,8 +22,7 @@ export default function Map() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [encodedPolyline, setEncodedPolyline] = useState<string | null>(null);
-  const [distance, setDistance] = useState<any>(null); // You can type this better later
-
+  const [distance, setDistance] = useState<any>(null);
   // get data from redux
   const destinationLocation = useSelector((state: RootState) => state.location.location);
 
@@ -33,16 +35,16 @@ export default function Map() {
     const origin = `${location.coords.latitude},${location.coords.longitude}`;
     const destination = `${destinationLocation.lat},${destinationLocation.lng}`;
 
-    const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&destination=${destination}&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`;
+const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&destination=${destination}&region=pk&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`;
 
     try {
       setLoading(true);
       const response = await fetch(url);
-      const rasta = await response.json();
+      const finalDestination = await response.json();
 
-      if (rasta.routes.length) {
-        setDistance(rasta.routes[0].legs[0]);
-        setEncodedPolyline(rasta.routes[0].overview_polyline.points);
+      if (finalDestination.routes.length) {
+        setDistance(finalDestination.routes[0].legs[0]);
+        setEncodedPolyline(finalDestination.routes[0].overview_polyline.points);
       } else {
         setErrorMsg("No routes found");
       }
@@ -78,22 +80,25 @@ export default function Map() {
           longitudeDelta: 0.005,
         }}
       >
-        {destinationLocation?.lat && destinationLocation?.lng && (
-          <Marker
-            coordinate={{
-              latitude: destinationLocation.lat,
-              longitude: destinationLocation.lng,
-            }}
-            title="Destination"
-            description="Selected location"
-          />
-        )}
+   {destinationLocation?.lat && destinationLocation?.lng && (
+<Marker
+  coordinate={{
+    latitude: destinationLocation.lat,
+    longitude: destinationLocation.lng,
+  }}
+  title="Destination"
+  description="Selected location"
+>
+  <FontAwesome5 name="map-pin" size={24} color="#000" />
+</Marker>
+
+)}
 
         {encodedPolyline && (
           <Polyline
             coordinates={decodePolyline(encodedPolyline)}
-            strokeColor="#90D1CA"
-            strokeWidth={6}
+            strokeColor="red"
+            strokeWidth={3}
           />
         )}
       </MapView>
