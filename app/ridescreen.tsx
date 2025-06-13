@@ -1,16 +1,30 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Map from "../components/Map";
+import RideComponent from "../components/rideComponent";
 
 export default function RideScreen() {
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ height: 300 }}>
+    <View style={styles.container}>
+      <View style={styles.mapSection}>
         <Map />
       </View>
-      <Text>maps is remain</Text>
+      <View style={styles.rideSection}>
+        <RideComponent />
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  mapSection: {
+    flex: 1,
+  },
+  rideSection: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+});
