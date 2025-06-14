@@ -1,16 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setLocation } from "@/redux/reducers/locationSlice";
 import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  Text,
-  TouchableOpacity,
   KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { setLocation } from "@/redux/reducers/locationSlice";
 
 type Prediction = {
   place_id: string;
@@ -24,7 +22,11 @@ type Prediction = {
   };
 };
 
-export default function RideComponent() {
+type Props = {
+  onDestinationSelected: () => void;
+};
+
+export default function RideComponent({ onDestinationSelected }: Props) {
   const [destinationQuery, setDestinationQuery] = useState("");
   const [predictions, setPredictions] = useState<Prediction[]>([]);
 
@@ -33,9 +35,7 @@ export default function RideComponent() {
   const fetchPredictions = async () => {
     try {
       const response = await fetch(
-   
-      `https://maps.gomaps.pro/maps/api/place/textsearch/json?query=${destinationQuery}&location=30.3753,69.3451&radius=1000000&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`
-
+        `https://maps.gomaps.pro/maps/api/place/textsearch/json?query=${destinationQuery}&location=30.3753,69.3451&radius=1000000&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`
       );
       const data = await response.json();
       setPredictions(data.results || []);
@@ -48,7 +48,18 @@ export default function RideComponent() {
     dispatch(setLocation(item.geometry.location));
     setPredictions([]);
     setDestinationQuery(item.name);
+    onDestinationSelected(); // 👉 yahan se getDirection call hoga
   };
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (destinationQuery.trim().length > 2) {
+        fetchPredictions();
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [destinationQuery]);
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -57,7 +68,6 @@ export default function RideComponent() {
         placeholder="Enter Destination"
         value={destinationQuery}
         onChangeText={setDestinationQuery}
-        onSubmitEditing={fetchPredictions}
         returnKeyType="search"
       />
       {predictions.length > 0 && (
@@ -75,8 +85,6 @@ export default function RideComponent() {
           ))}
         </ScrollView>
       )}
-
-      <Button title="Book Ride" color="#90D1CA" onPress={fetchPredictions} />
     </KeyboardAvoidingView>
   );
 }

@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import Map from "../components/Map";
 import RideComponent from "../components/rideComponent";
 
 export default function RideScreen() {
+  const mapRef = useRef<{ getDirection: () => void }>(null);
+
+  const handleGetDirection = () => {
+    mapRef.current?.getDirection();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mapSection}>
-        <Map />
+        <Map ref={mapRef} />
       </View>
       <View style={styles.rideSection}>
-        <RideComponent />
+        <RideComponent onDestinationSelected={handleGetDirection} />
       </View>
     </View>
   );

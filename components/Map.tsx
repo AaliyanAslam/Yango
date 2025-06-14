@@ -1,30 +1,30 @@
-// Map.tsx
 import { useLocation } from "@/hooks/useLocation";
 import { decodePolyline } from "@/lib/decodePolyline";
-import { useState } from "react";
+import { RootState } from "@/redux/store/store";
+import { FontAwesome5 } from "@expo/vector-icons";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   StyleSheet,
   Text,
-  View,
-  Image
+  View
 } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store"; 
-import { FontAwesome5 } from '@expo/vector-icons'; // ✅ CORRECT
 
-
-export default function Map() {
+const Map = forwardRef((_, ref) => {
   const { location } = useLocation();
+  console.log(location);
+  
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [encodedPolyline, setEncodedPolyline] = useState<string | null>(null);
   const [distance, setDistance] = useState<any>(null);
-  // get data from redux
-  const destinationLocation = useSelector((state: RootState) => state.location.location);
+
+  const destinationLocation = useSelector(
+    (state: RootState) => state.location.location
+  );
 
   const getDirection = async () => {
     if (!location || !destinationLocation) {
@@ -35,7 +35,7 @@ export default function Map() {
     const origin = `${location.coords.latitude},${location.coords.longitude}`;
     const destination = `${destinationLocation.lat},${destinationLocation.lng}`;
 
-const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&destination=${destination}&region=pk&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`;
+    const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&destination=${destination}&region=pk&key=AlzaSyYRSxomX6XxUSl0G0xbpJMIeyftdlrs71Q`;
 
     try {
       setLoading(true);
@@ -56,6 +56,10 @@ const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&d
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    getDirection,
+  }));
+
   if (!location) {
     return (
       <View style={styles.container}>
@@ -71,6 +75,7 @@ const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&d
       </Text>
       {errorMsg && <Text>{errorMsg}</Text>}
       {loading && <ActivityIndicator size="large" color="#90D1CA" />}
+
       <MapView
         style={styles.map}
         initialRegion={{
@@ -80,19 +85,33 @@ const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&d
           longitudeDelta: 0.005,
         }}
       >
-   {destinationLocation?.lat && destinationLocation?.lng && (
-<Marker
-  coordinate={{
-    latitude: destinationLocation.lat,
-    longitude: destinationLocation.lng,
-  }}
-  title="Destination"
-  description="Selected location"
->
-  <FontAwesome5 name="map-pin" size={24} color="#000" />
-</Marker>
+        <Marker
+          coordinate={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          }}
+          title="You are here"
+          description="Current location"
+        >
+          <View style={styles.markerContainer}>
+            <FontAwesome5 name="map-marker-alt" size={30} color="green" />
+          </View>
+        </Marker>
 
-)}
+        {destinationLocation?.lat && destinationLocation?.lng && (
+          <Marker
+            coordinate={{
+              latitude: destinationLocation.lat,
+              longitude: destinationLocation.lng,
+            }}
+            title="Destination"
+            description="Selected location"
+          >
+            <View style={styles.markerContainer}>
+              <FontAwesome5 name="map-marker-alt" size={30} color="red" />
+            </View>
+          </Marker>
+        )}
 
         {encodedPolyline && (
           <Polyline
@@ -102,15 +121,15 @@ const url = `https://maps.gomaps.pro/maps/api/directions/json?origin=${origin}&d
           />
         )}
       </MapView>
-
-      <Button
-        onPress={getDirection}
-        title="Get Direction"
-        color="#90D1CA"
-      />
+      <View>
+        <View></View>
+        <View></View>
+      </View>
     </View>
   );
-}
+});
+
+export default Map;
 
 const styles = StyleSheet.create({
   container: {
@@ -119,5 +138,9 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "80%",
+  },
+  markerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
